@@ -1,366 +1,320 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sudoku Premium</title>
-    <style>
-        :root {
-            --bg-color: #f0f2f5;
-            --container-bg: #ffffff;
-            --border-dark: #333333;
-            --border-light: #cccccc;
-            --text-main: #222222;
-            --primary-color: #007bff;
-            --accent-color: #e6f2ff;
-            --error-color: #dc3545;
-            --fixed-cell-bg: #f8f9fa;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .container {
-            background: var(--container-bg);
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
-            max-width: 450px;
-            width: 100%;
-            text-align: center;
-        }
-
-        h1 {
-            margin-bottom: 15px;
-            font-size: 24px;
-            letter-spacing: 1px;
-        }
-
-        .controls {
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 10px;
-        }
-
-        select, button {
-            padding: 8px 12px;
-            border-radius: 6px;
-            border: 1px solid var(--border-light);
-            background-color: #fff;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        button {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            font-weight: bold;
-        }
-
-        button:hover {
-            opacity: 0.9;
-        }
-
-        /* Grade do Sudoku */
-        .sudoku-grid {
-            display: grid;
-            grid-template-columns: repeat(9, 1fr);
-            border: 2px solid var(--border-dark);
-            margin-bottom: 20px;
-            background-color: var(--border-dark);
-            gap: 1px;
-        }
-
-        .cell {
-            aspect-ratio: 1;
-            background-color: #fff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            user-select: none;
-            transition: background-color 0.15s;
-        }
-
-        /* Bordas mais grossas para os blocos 3x3 */
-        .cell:nth-child(3n) {
-            border-right: 2px solid var(--border-dark);
-        }
-        .cell:nth-child(9n) {
-            border-right: none;
-        }
-        
-        /* Simulação das bordas horizontais dos blocos de 3 */
-        .sudoku-grid > div:nth-child(n+19):nth-child(-n+27),
-        .sudoku-grid > div:nth-child(n+46):nth-child(-n+54) {
-            border-bottom: 2px solid var(--border-dark);
-        }
-
-        .cell.fixed {
-            background-color: var(--fixed-cell-bg);
-            color: #555;
-            cursor: not-allowed;
-        }
-
-        .cell.selected {
-            background-color: var(--accent-color);
-            outline: 2px solid var(--primary-color);
-            z-index: 10;
-        }
-
-        .cell.error {
-            background-color: #f8d7da;
-            color: var(--error-color);
-        }
-
-        /* Teclado numérico */
-        .num-pad {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 8px;
-        }
-
-        .num-btn {
-            padding: 12px;
-            background-color: #e9ecef;
-            color: var(--text-main);
-            border: none;
-            border-radius: 6px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .num-btn:hover {
-            background-color: #dee2e6;
-        }
-
-        .num-btn.clear-btn {
-            grid-column: span 1;
-            background-color: #6c757d;
-            color: white;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Sudoku dos Dinos 🦕</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --accent:#2fb380; --dark:#1f8a5b; --soft:#e2f5ec; --screen:#f4fbf6;
+    --line:#dbe7e0; --err-bg:#ffe0e0; --err:#e23b3b; --fixed:#f1f5f2; --fixed-tx:#41524a;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  body{
+    font-family:'Fredoka',system-ui,sans-serif;
+    background:radial-gradient(120% 90% at 50% 0%,#eaf7ef 0%,#d7eede 60%,#c9e7d3 100%);
+    min-height:100vh;min-height:100dvh;display:flex;align-items:center;justify-content:center;padding:16px;
+  }
+  .phone{
+    width:100%;max-width:380px;background:#1d2b24;border-radius:38px;padding:12px;
+    box-shadow:0 18px 40px rgba(0,0,0,.22);
+  }
+  .screen{background:var(--screen);border-radius:28px;overflow:hidden;position:relative;min-height:660px}
+  .head{padding:20px 20px 8px}
+  .brand{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+  .mascot{font-size:32px;animation:floaty 3s ease-in-out infinite}
+  .title{font-weight:700;font-size:20px;color:var(--dark);line-height:1.05}
+  .sub{font-size:12px;color:#8aa197}
+  .controls{display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .seg{display:flex;background:var(--soft);border-radius:999px;padding:3px}
+  .seg button{border:none;cursor:pointer;font-family:inherit;font-weight:600;font-size:14px;padding:7px 14px;border-radius:999px;background:transparent;color:var(--dark)}
+  .seg button.on{background:var(--accent);color:#fff}
+  .newbtn{border:none;cursor:pointer;font-family:inherit;font-weight:600;font-size:14px;padding:9px 16px;border-radius:999px;background:var(--dark);color:#fff}
+  .prog-wrap{padding:14px 20px 0}
+  .prog-top{display:flex;justify-content:space-between;font-size:12px;color:#8aa197;font-weight:600;margin-bottom:5px}
+  .prog-top b{color:var(--dark);font-weight:700}
+  .prog-track{height:13px;background:var(--soft);border-radius:999px;overflow:hidden}
+  .prog-fill{height:100%;background:var(--accent);border-radius:999px;transition:width .4s ease;width:0}
+  .eggs{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;padding:16px 20px 4px}
+  .egg{font-size:20px;filter:grayscale(1) opacity(.45)}
+  .egg.done{filter:none;animation:pop .5s ease-out}
+  .grid-wrap{display:flex;justify-content:center;padding:8px 20px 6px}
+  .grid{display:grid;border:3px solid var(--dark);border-radius:12px;overflow:hidden}
+  .cell{display:flex;align-items:center;justify-content:center;font-weight:700;background:#fff;cursor:pointer;user-select:none;position:relative;transition:background .12s;box-sizing:border-box}
+  .cell.alt{background:#fbfdfb}
+  .cell.fixed{background:var(--fixed);color:var(--fixed-tx);cursor:default}
+  .cell.err{background:var(--err-bg);color:var(--err)}
+  .cell.sel{background:var(--soft);outline:3px solid var(--accent);outline-offset:-3px;z-index:5}
+  .pad{display:grid;gap:8px;padding:12px 20px 22px}
+  .pad button{border:none;cursor:pointer;font-family:inherit;font-weight:700;font-size:20px;padding:12px 0;border-radius:12px;background:#fff;color:var(--dark);box-shadow:0 2px 0 var(--soft)}
+  .pad button.erase{background:var(--soft)}
+  .pad button:active{transform:translateY(1px)}
+  /* toast + win */
+  .toast{position:absolute;top:120px;left:0;right:0;display:flex;justify-content:center;pointer-events:none;z-index:20;padding:0 18px}
+  .toast .bubble{background:var(--accent);color:#fff;font-weight:700;font-size:15px;line-height:1.25;padding:12px 18px;border-radius:18px;text-align:center;box-shadow:0 10px 24px rgba(0,0,0,.22);animation:burst .45s ease-out;max-width:300px}
+  .win{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:30}
+  .win .card{position:absolute;left:0;right:0;bottom:30px;display:flex;justify-content:center;pointer-events:auto}
+  .win .box{background:var(--accent);color:#fff;border-radius:22px;padding:18px 24px;text-align:center;box-shadow:0 12px 30px rgba(0,0,0,.28);animation:burst .5s ease-out;max-width:280px}
+  .win .dino{font-size:44px;animation:wiggle 1s ease-in-out infinite}
+  .win h2{font-size:19px;margin-top:4px}
+  .win p{font-size:13px;opacity:.95;margin-top:2px;font-weight:500}
+  .win button{margin-top:14px;border:none;cursor:pointer;font-family:inherit;font-weight:700;font-size:15px;padding:10px 20px;border-radius:999px;background:#fff;color:var(--dark)}
+  .confetti{position:absolute;top:-24px;width:9px;height:14px;border-radius:2px}
+  .mute{position:absolute;top:16px;right:18px;border:none;background:rgba(0,0,0,.05);cursor:pointer;font-size:15px;width:34px;height:34px;border-radius:50%;z-index:25}
+  @keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+  @keyframes pop{0%{transform:scale(.3);opacity:0}55%{transform:scale(1.35)}100%{transform:scale(1)}}
+  @keyframes burst{0%{transform:scale(.4);opacity:0}50%{transform:scale(1.12);opacity:1}100%{transform:scale(1)}}
+  @keyframes wiggle{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(6deg)}}
+  @keyframes fall{0%{transform:translateY(-30px) rotate(0);opacity:1}100%{transform:translateY(620px) rotate(560deg);opacity:0}}
+</style>
 </head>
 <body>
-
-<div class="container">
-    <h1>Sudoku</h1>
-    
-    <div class="controls">
-        <select id="difficulty">
-            <option value="easy">Fácil</option>
-            <option value="medium" selected>Médio</option>
-            <option value="hard">Difícil</option>
-        </select>
-        <button id="new-game">Novo Jogo</button>
+<div class="phone">
+  <div class="screen" id="screen">
+    <button class="mute" id="mute" title="Ligar/desligar som">🔊</button>
+    <div class="head">
+      <div class="brand">
+        <span class="mascot">🦕</span>
+        <div>
+          <div class="title">Ninho dos Dinos</div>
+          <div class="sub">Cada quadrado vira um dino</div>
+        </div>
+      </div>
+      <div class="controls">
+        <div class="seg" id="seg">
+          <button data-size="6">6×6</button>
+          <button data-size="9">9×9</button>
+        </div>
+        <button class="newbtn" id="new">↻ Novo</button>
+      </div>
     </div>
-
-    <div class="sudoku-grid" id="grid"></div>
-
-    <div class="num-pad">
-        <button class="num-btn" data-val="1">1</button>
-        <button class="num-btn" data-val="2">2</button>
-        <button class="num-btn" data-val="3">3</button>
-        <button class="num-btn" data-val="4">4</button>
-        <button class="num-btn" data-val="5">5</button>
-        <button class="num-btn" data-val="6">6</button>
-        <button class="num-btn" data-val="7">7</button>
-        <button class="num-btn" data-val="8">8</button>
-        <button class="num-btn" data-val="9">9</button>
-        <button class="num-btn clear-btn" data-val="0">⌫</button>
+    <div class="prog-wrap">
+      <div class="prog-top"><span>Progresso</span><b id="pct">0%</b></div>
+      <div class="prog-track"><div class="prog-fill" id="fill"></div></div>
     </div>
+    <div class="eggs" id="eggs"></div>
+    <div class="grid-wrap"><div class="grid" id="grid"></div></div>
+    <div class="pad" id="pad"></div>
+    <div class="toast" id="toast" style="display:none"><div class="bubble" id="toastText"></div></div>
+    <div class="win" id="win" style="display:none"></div>
+  </div>
 </div>
 
 <script>
-    const gridElement = document.getElementById('grid');
-    const difficultySelect = document.getElementById('difficulty');
-    const newGameBtn = document.getElementById('new-game');
-    
-    let solutionBoard = [];
-    let currentBoard = [];
-    let initialBoard = [];
-    let selectedCellIndex = null;
+(function(){
+  var accent='#2fb380';
+  var SHAPES=null; // (figuras não usadas nesta versão — só números)
+  var state=null, size=6, selected=null, soundOn=true, toastTimer=null;
 
-    // Tabuleiro base estático e estritamente válido para transformações
-    const baseBoard = [
-        [1,2,3, 4,5,6, 7,8,9],
-        [4,5,6, 7,8,9, 1,2,3],
-        [7,8,9, 1,2,3, 4,5,6],
-        [2,3,1, 5,6,4, 8,9,7],
-        [5,6,4, 8,9,7, 2,3,1],
-        [8,9,7, 2,3,1, 5,6,4],
-        [3,1,2, 6,4,5, 9,7,8],
-        [6,4,5, 9,7,8, 3,1,2],
-        [9,7,8, 3,1,2, 6,4,5]
-    ];
+  var el={
+    screen:document.getElementById('screen'), grid:document.getElementById('grid'),
+    pad:document.getElementById('pad'), eggs:document.getElementById('eggs'),
+    fill:document.getElementById('fill'), pct:document.getElementById('pct'),
+    toast:document.getElementById('toast'), toastText:document.getElementById('toastText'),
+    win:document.getElementById('win'), seg:document.getElementById('seg'),
+    mute:document.getElementById('mute')
+  };
 
-    // Embaralha o tabuleiro preservando as regras do Sudoku
-    function generateSudoku() {
-        let board = JSON.parse(JSON.stringify(baseBoard));
-        
-        // 1. Mapeamento aleatório de dígitos (1-9)
-        const nums = [1,2,3,4,5,6,7,8,9];
-        const shuffledNums = [...nums].sort(() => Math.random() - 0.5);
-        
-        for(let r=0; r<9; r++) {
-            for(let c=0; c<9; c++) {
-                let idx = nums.indexOf(board[r][c]);
-                board[r][c] = shuffledNums[idx];
-            }
-        }
-
-        // 2. Embaralhar linhas dentro dos blocos de 3
-        for (let i = 0; i < 9; i += 3) {
-            let r1 = i + Math.floor(Math.random() * 3);
-            let r2 = i + Math.floor(Math.random() * 3);
-            if (r1 !== r2) {
-                [board[r1], board[r2]] = [board[r2], board[r1]];
-            }
-        }
-        
-        return board;
-    }
-
-    function createMask(board, difficulty) {
-        let masked = JSON.parse(JSON.stringify(board));
-        let celulasParaRemover = 40; // Médio padrão
-        
-        if (difficulty === 'easy') celulasParaRemover = 30;
-        if (difficulty === 'hard') celulasParaRemover = 52;
-
-        let removidas = 0;
-        while (removidas < celulasParaRemover) {
-            let row = Math.floor(Math.random() * 9);
-            let col = Math.floor(Math.random() * 9);
-            if (masked[row][col] !== 0) {
-                masked[row][col] = 0;
-                removidas++;
-            }
-        }
-        return masked;
-    }
-
-    function renderGrid() {
-        gridElement.innerHTML = '';
-        selectedCellIndex = null;
-
-        for (let r = 0; r < 9; r++) {
-            for (let c = 0; c < 9; c++) {
-                const cellValue = currentBoard[r][c];
-                const isFixed = initialBoard[r][c] !== 0;
-                
-                const cellDiv = document.createElement('div');
-                cellDiv.classList.add('cell');
-                cellDiv.dataset.row = r;
-                cellDiv.dataset.col = c;
-                
-                if (cellValue !== 0) {
-                    cellDiv.textContent = cellValue;
-                }
-                
-                if (isFixed) {
-                    cellDiv.classList.add('fixed');
-                } else {
-                    cellDiv.addEventListener('click', () => selectCell(cellDiv, r, c));
-                }
-
-                // Verifica erro se preenchido e não fixo
-                if (!isFixed && cellValue !== 0 && cellValue !== solutionBoard[r][c]) {
-                    cellDiv.classList.add('error');
-                }
-
-                gridElement.appendChild(cellDiv);
-            }
-        }
-    }
-
-    function selectCell(element, row, col) {
-        document.querySelectorAll('.cell').forEach(c => c.classList.remove('selected'));
-        element.classList.add('selected');
-        selectedCellIndex = { row, col, element };
-    }
-
-    function handleInput(value) {
-        if (!selectedCellIndex) return;
-        const { row, col, element } = selectedCellIndex;
-
-        currentBoard[row][col] = value;
-        
-        if (value === 0) {
-            element.textContent = '';
-            element.classList.remove('error');
-        } else {
-            element.textContent = value;
-            if (value !== solutionBoard[row][col]) {
-                element.classList.add('error');
-            } else {
-                element.classList.remove('error');
-            }
-        }
-        checkWin();
-    }
-
-    function checkWin() {
-        for (let r = 0; r < 9; r++) {
-            for (let c = 0; c < 9; c++) {
-                if (currentBoard[r][c] !== solutionBoard[r][c]) return;
-            }
-        }
-        setTimeout(() => alert('Parabéns! Você resolveu o Sudoku com sucesso! 🎉'), 100);
-    }
-
-    function initGame() {
-        solutionBoard = generateSudoku();
-        currentBoard = createMask(solutionBoard, difficultySelect.value);
-        initialBoard = JSON.parse(JSON.stringify(currentBoard));
-        renderGrid();
-    }
-
-    // Eventos do Teclado Virtual
-    document.querySelectorAll('.num-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const val = parseInt(btn.dataset.val);
-            handleInput(val);
-        });
+  // ---------- Sudoku engine ----------
+  function boxDims(s){ return s===9?{boxH:3,boxW:3}:{boxH:2,boxW:3}; }
+  function shuffle(a){ for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;} return a; }
+  function transpose(b){ return b[0].map(function(_,c){return b.map(function(r){return r[c];});}); }
+  function permuteBands(b,s,band){
+    var bands=shuffle(Array.from({length:s/band},function(_,i){return i;}));
+    var out=[];
+    bands.forEach(function(bi){
+      var rows=shuffle(Array.from({length:band},function(_,i){return bi*band+i;}));
+      rows.forEach(function(r){ out.push(b[r].slice()); });
     });
+    return out;
+  }
+  function genSolution(s){
+    var d=boxDims(s), boxH=d.boxH, boxW=d.boxW, b=[], r, c;
+    for(r=0;r<s;r++){ b.push([]); for(c=0;c<s;c++){ b[r].push((boxW*(r%boxH)+Math.floor(r/boxH)+c)%s+1); } }
+    var perm=shuffle(Array.from({length:s},function(_,i){return i+1;}));
+    b=b.map(function(row){return row.map(function(v){return perm[v-1];});});
+    b=permuteBands(b,s,boxH);
+    b=transpose(b); b=permuteBands(b,s,boxW); b=transpose(b);
+    return b;
+  }
+  function mask(sol,s){
+    var b=sol.map(function(r){return r.slice();});
+    var remove=s===9?34:14, done=0, guard=0;
+    while(done<remove && guard<4000){ guard++;
+      var r=Math.floor(Math.random()*s), c=Math.floor(Math.random()*s);
+      if(b[r][c]!==0){ b[r][c]=0; done++; }
+    }
+    return b;
+  }
+  function newGame(s){
+    var d=boxDims(s), sol=genSolution(s), board=mask(sol,s);
+    return { size:s, boxH:d.boxH, boxW:d.boxW, solution:sol, board:board,
+             fixed:board.map(function(r){return r.map(function(v){return v!==0;});}), won:false };
+  }
+  function blockOf(g,r,c){ var bpr=g.size/g.boxW; return Math.floor(r/g.boxH)*bpr+Math.floor(c/g.boxW); }
+  function cellsOfBlock(g,bi){
+    var bpr=g.size/g.boxW, br=Math.floor(bi/bpr), bc=bi%bpr, cells=[], r, c;
+    for(r=br*g.boxH;r<br*g.boxH+g.boxH;r++) for(c=bc*g.boxW;c<bc*g.boxW+g.boxW;c++) cells.push([r,c]);
+    return cells;
+  }
+  function blockComplete(g,bi){
+    return cellsOfBlock(g,bi).every(function(rc){ return g.board[rc[0]][rc[1]]!==0 && g.board[rc[0]][rc[1]]===g.solution[rc[0]][rc[1]]; });
+  }
+  function countComplete(g){ var n=0,i; for(i=0;i<g.size;i++) if(blockComplete(g,i)) n++; return n; }
+  function isWon(g){ var r,c; for(r=0;r<g.size;r++) for(c=0;c<g.size;c++) if(g.board[r][c]!==g.solution[r][c]) return false; return true; }
 
-    // Eventos do Teclado Físico
-    document.addEventListener('keydown', (e) => {
-        if (!selectedCellIndex) return;
-        if (e.key >= '1' && e.key <= '9') {
-            handleInput(parseInt(e.key));
-        } else if (e.key === 'Backspace' || e.key === 'Delete' || e.key === '0') {
-            handleInput(0);
-        }
+  // ---------- Sound ----------
+  var ac=null;
+  function chime(win){
+    if(!soundOn) return;
+    try{
+      var AC=window.AudioContext||window.webkitAudioContext; if(!AC) return;
+      ac=ac||new AC(); if(ac.state==='suspended') ac.resume();
+      var now=ac.currentTime, notes=win?[523.25,659.25,783.99,1046.5,1318.5]:[523.25,659.25,783.99,1046.5];
+      notes.forEach(function(f,i){
+        var o=ac.createOscillator(), g=ac.createGain();
+        o.type='triangle'; o.frequency.value=f;
+        var t=now+i*(win?0.11:0.085);
+        g.gain.setValueAtTime(0.0001,t);
+        g.gain.exponentialRampToValueAtTime(0.26,t+0.02);
+        g.gain.exponentialRampToValueAtTime(0.0001,t+0.32);
+        o.connect(g).connect(ac.destination); o.start(t); o.stop(t+0.34);
+      });
+    }catch(e){}
+  }
+
+  var MSGS=[
+    'Isso, Bernardo! Mais um dino chocado! 😄🦕',
+    'Boa, Bernardo! Você fechou esse quadradinho! 😄🦖',
+    'Uau, Bernardo! Um quadrado completo! 😄🦕',
+    'Mandou bem, Bernardo! Passo a passo! 😄🦖',
+    'Show, Bernardo! Mais um pedacinho resolvido! 😄🦕'
+  ];
+  function showToast(){
+    el.toastText.textContent=MSGS[Math.floor(Math.random()*MSGS.length)];
+    el.toast.style.display='flex';
+    el.toast.firstElementChild.style.animation='none'; void el.toast.offsetWidth;
+    el.toast.firstElementChild.style.animation='burst .45s ease-out';
+    clearTimeout(toastTimer);
+    toastTimer=setTimeout(function(){ el.toast.style.display='none'; },2600);
+  }
+
+  // ---------- Interaction ----------
+  function select(r,c){
+    var g=state; if(g.won||g.fixed[r][c]) return;
+    selected={r:r,c:c}; render();
+  }
+  function input(val){
+    var g=state; if(!selected||g.won) return;
+    var r=selected.r, c=selected.c; if(g.fixed[r][c]) return;
+    var before=countComplete(g);
+    g.board[r][c]=val;
+    g.won=isWon(g);
+    var after=countComplete(g);
+    if(g.won){ chime(true); }
+    else if(after>before){ chime(false); showToast(); }
+    render();
+    if(g.won) celebrate();
+  }
+
+  // ---------- Render ----------
+  function render(){
+    var g=state, s=g.size;
+    var cell=s===9?32:46, face=s===9?17:24;
+    // progress
+    var correct=0,r,c;
+    for(r=0;r<s;r++) for(c=0;c<s;c++) if(g.board[r][c]===g.solution[r][c]) correct++;
+    var pct=Math.round(correct/(s*s)*100);
+    el.fill.style.width=pct+'%'; el.pct.textContent=pct+'%';
+    // eggs
+    el.eggs.innerHTML='';
+    for(var i=0;i<s;i++){
+      var done=blockComplete(g,i);
+      var sp=document.createElement('span');
+      sp.className='egg'+(done?' done':''); sp.textContent=done?'🦕':'🥚';
+      el.eggs.appendChild(sp);
+    }
+    // grid
+    el.grid.style.gridTemplateColumns='repeat('+s+','+cell+'px)';
+    el.grid.innerHTML='';
+    for(r=0;r<s;r++) for(c=0;c<s;c++){
+      var v=g.board[r][c], fixed=g.fixed[r][c];
+      var sel=selected&&selected.r===r&&selected.c===c;
+      var err=!fixed&&v!==0&&v!==g.solution[r][c];
+      var bi=blockOf(g,r,c);
+      var d=document.createElement('div');
+      d.className='cell'+(fixed?' fixed':'')+(err?' err':'')+(sel?' sel':'')+((bi%2===1&&!fixed)?' alt':'');
+      d.style.width=cell+'px'; d.style.height=cell+'px'; d.style.fontSize=face+'px';
+      d.style.borderRight=((c+1)%g.boxW===0&&c<s-1)?'2.5px solid '+'#1f8a5b':'1px solid #dbe7e0';
+      d.style.borderBottom=((r+1)%g.boxH===0&&r<s-1)?'2.5px solid '+'#1f8a5b':'1px solid #dbe7e0';
+      if(v!==0) d.textContent=v;
+      (function(rr,cc){ d.addEventListener('click',function(){ select(rr,cc); }); })(r,c);
+      el.grid.appendChild(d);
+    }
+    // pad
+    el.pad.style.gridTemplateColumns=s===9?'repeat(5,1fr)':'repeat(4,1fr)';
+    el.pad.innerHTML='';
+    for(var n=1;n<=s;n++){
+      (function(nn){
+        var b=document.createElement('button'); b.textContent=nn;
+        b.addEventListener('click',function(){ input(nn); });
+        el.pad.appendChild(b);
+      })(n);
+    }
+    var er=document.createElement('button'); er.className='erase'; er.textContent='⌫ Apagar';
+    er.style.gridColumn=s===9?'span 5':'span 4';
+    er.addEventListener('click',function(){ input(0); });
+    el.pad.appendChild(er);
+    // size toggle active state
+    Array.prototype.forEach.call(el.seg.children,function(btn){
+      btn.classList.toggle('on', parseInt(btn.dataset.size,10)===s);
     });
+  }
 
-    newGameBtn.addEventListener('click', initGame);
-    difficultySelect.addEventListener('change', initGame);
+  function celebrate(){
+    var colors=['#2fb380','#ff8a3d','#23a6b3','#7c5cff','#ffcf3f','#ff5d73'];
+    el.win.innerHTML=''; el.win.style.display='block';
+    for(var i=0;i<44;i++){
+      var p=document.createElement('span'); p.className='confetti';
+      p.style.left=(Math.random()*100)+'%';
+      p.style.background=colors[i%colors.length];
+      p.style.animation='fall '+(1.6+Math.random()*1.4)+'s linear '+(Math.random()*0.8)+'s infinite';
+      el.win.appendChild(p);
+    }
+    var card=document.createElement('div'); card.className='card';
+    card.innerHTML='<div class="box"><div class="dino">🦕</div>'
+      +'<h2>Você chocou todos os dinos, Bernardo!</h2>'
+      +'<p>Um pedacinho de cada vez. 😄</p>'
+      +'<button id="again">Jogar de novo</button></div>';
+    el.win.appendChild(card);
+    document.getElementById('again').addEventListener('click',function(){ start(size); });
+  }
 
-    
-    // Inicialização automática ao carregar
-    initGame();
+  function start(s){
+    size=s; state=newGame(s); selected=null;
+    el.win.style.display='none'; el.toast.style.display='none';
+    render();
+  }
+
+  // ---------- Events ----------
+  el.seg.addEventListener('click',function(e){
+    var b=e.target.closest('button'); if(!b) return; start(parseInt(b.dataset.size,10));
+  });
+  document.getElementById('new').addEventListener('click',function(){ start(size); });
+  el.mute.addEventListener('click',function(){
+    soundOn=!soundOn; el.mute.textContent=soundOn?'🔊':'🔇';
+  });
+  document.addEventListener('keydown',function(e){
+    if(!selected) return;
+    if(e.key>='1'&&e.key<='9') input(parseInt(e.key,10));
+    else if(e.key==='Backspace'||e.key==='Delete'||e.key==='0') input(0);
+  });
+
+  start(6);
+})();
 </script>
 </body>
 </html>
